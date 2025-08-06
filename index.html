@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>School Event Registration</title>
+</head>
+<body>
+  <h1>School Event Registration Form</h1>
+  <form id="registrationForm">
+    <label>School Name: <input type="text" name="school" required></label><br><br>
+    <label>Staff 1 Name: <input type="text" name="staff1" required></label><br>
+    <label>Staff 2 Name: <input type="text" name="staff2" required></label><br><br>
+
+    <div id="studentsSection"></div>
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    const events = ["Dance", "Singing", "Drawing", "Essay", "Quiz", "Drama", "Sports"];
+    const maxStudents = 25;
+    const studentsSection = document.getElementById("studentsSection");
+
+    for (let i = 1; i <= maxStudents; i++) {
+      const div = document.createElement("div");
+      div.innerHTML = `<b>Student ${i}</b> 
+        <input type="text" name="student${i}" placeholder="Student Name">
+        ${events.map(event => 
+          `<label><input type="checkbox" name="event_${i}_${event}">${event}</label>`
+        ).join(" ")}<br>`;
+      studentsSection.appendChild(div);
+    }
+
+    document.getElementById("registrationForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const payload = {};
+      formData.forEach((value, key) => {
+        payload[key] = value;
+      });
+      const response = await fetch("https://your-backend-url.onrender.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      alert(await response.text());
+    });
+  </script>
+</body>
+</html>
